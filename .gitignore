@@ -1,0 +1,9 @@
+build/*
+.project
+.pydevproject
+*.pyc
+*.pyo
+*.swp
+*.sqlite
+venv/
+pimmsqn/local_settings.py
