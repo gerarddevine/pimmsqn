@@ -95,9 +95,10 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-    'pimmsqn.apps.qn',
-    'pimmsqn.apps.initialiser',
-    'pimmsqn.apps.explorer'
+    'south',
+    'apps.qn',
+    'apps.initialiser',
+    'apps.explorer'
 )
 
 # ----------------------------------------------------
@@ -113,4 +114,9 @@ LOG=logging.getLogger('CMIP5')
 # Location of test files to expose through feed
 
 TESTDIR = os.path.join (thisDir,'test')
+
+try:
+    from local_settings import *
+except ImportError:
+    pass
 

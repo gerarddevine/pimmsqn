@@ -7,18 +7,17 @@ os.environ['DJANGO_SETTINGS_MODULE']='settings'
 
 from pimmsqn.apps.qn.models import Experiment
 from pimmsqn.apps.initialiser.XMLinitialiseQ import initialise
-from pimmsqn.apps.initialiser.ControlledModel import *
-from pimmsqn.apps.initialiser.ControlledGrid import *
-
-from initialiseRefs import *
-from initialiseFiles import *
-from initialiseVars import *
+from pimmsqn.apps.initialiser.ControlledModel import initialiseModel
+from pimmsqn.apps.initialiser.ControlledGrid import initialiseGrid
+from pimmsqn.apps.initialiser.initialiseRefs import initialiseRefs
+from pimmsqn.apps.initialiser.initialiseFiles import initialiseFiles
+from pimmsqn.apps.initialiser.initialiseVars import initialiseVars
 
 # Initialise the Questionnaire
 initialise()
 
 # load cmip5 input files
-#initialiseFiles()
+initialiseFiles()
 
 # load variables associated with cmip5 input files
 initialiseVars()

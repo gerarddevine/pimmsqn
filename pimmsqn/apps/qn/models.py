@@ -2,7 +2,7 @@
 from datetime import datetime
 
 from django.db import models
-from django.db.models.query import CollectedObjects, delete_objects #@UnresolvedImport
+from django.db.models.query import CollectedObjects, delete_objects 
 from django.db.models.fields.related import ForeignKey #@UnresolvedImport
 from django.conf import settings #@UnresolvedImport
 from django.core.files.base import ContentFile #@UnresolvedImport
