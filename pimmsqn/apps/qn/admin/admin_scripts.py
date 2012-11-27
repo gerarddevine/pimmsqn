@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.expanduser('..\qn'))
 sys.path.insert(1, os.path.expanduser('..\..\cmip5q'))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
-from cmip5q.qn.models import *
+from pimmsqn.apps.qn.models import *
 
 
 #*******************************************************************************

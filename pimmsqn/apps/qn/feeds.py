@@ -1,16 +1,13 @@
-from datetime import datetime
 import os
 
 from django.conf import settings
 from django.contrib.sites.models import RequestSite
 from django.core.urlresolvers import reverse
 
-from lxml import etree as ET
-
 from atom import Feed, AtomFeed
-from cmip5q.qn.utilities import atomuri, HTMLdate
-from cmip5q.qn.models import *
-from cmip5q.XMLutilities import etTxt
+
+from pimmsqn.apps.qn.models import *
+from pimmsqn.apps.qn.XMLutilities import etTxt
 
 
 logging=settings.LOG
@@ -76,14 +73,11 @@ class TestDocumentSet(object):
         self.fname = f
         self.cimtype = 'DocumentSet'
         self.author = self.DummyAuthor()
-        #if self.created=='':self.created=datetime.now()
-        #if self.updated=='':self.updated=datetime.now()
-        #FIXME: temporary fix for strange date bug
         self.created = datetime.now()
         self.updated = datetime.now()
 
     def get_absolute_url(self):
-        return reverse('cmip5q.qn.views.testFile', args=(self.fname, ))
+        return reverse('pimmsqn.apps.qn.views.testFile', args=(self.fname, ))
     
 
 #class AtomEntryCustomFeed(Feed):

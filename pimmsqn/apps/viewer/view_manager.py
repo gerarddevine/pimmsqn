@@ -6,19 +6,19 @@ A view of a cim instance.
 import lxml
 from lxml import etree as et
 
-from pimmsqn.viewer.view_exception import ViewException
-from pimmsqn.viewer.base_renderer import VIEW_FORMAT_HTML
-from pimmsqn.viewer.base_renderer import VIEW_FORMAT_PDF
-from pimmsqn.viewer.base_renderer import VIEW_FORMAT_XML
-from pimmsqn.viewer.base_renderer import VIEW_MODE_FULL
-from pimmsqn.viewer.base_renderer import VIEW_MODE_PARTIAL
-from pimmsqn.viewer.renderer_of_data_object import RendererOfDataObject
-from pimmsqn.viewer.renderer_of_document_set import RendererOfDocumentSet
-from pimmsqn.viewer.renderer_of_model_component import RendererOfModelComponent
-from pimmsqn.viewer.renderer_of_numerical_experiment import RendererOfNumericalExperiment
-from pimmsqn.viewer.renderer_of_simulation_run import RendererOfSimulationRun
-from pimmsqn.viewer.renderer_of_gridspec import RendererOfGridspec
-from pimmsqn.viewer.renderer_of_platform import RendererOfPlatform
+from pimmsqn.apps.viewer.view_exception import ViewException
+from pimmsqn.apps.viewer.base_renderer import VIEW_FORMAT_HTML
+from pimmsqn.apps.viewer.base_renderer import VIEW_FORMAT_PDF
+from pimmsqn.apps.viewer.base_renderer import VIEW_FORMAT_XML
+from pimmsqn.apps.viewer.base_renderer import VIEW_MODE_FULL
+from pimmsqn.apps.viewer.base_renderer import VIEW_MODE_PARTIAL
+from pimmsqn.apps.viewer.renderer_of_data_object import RendererOfDataObject
+from pimmsqn.apps.viewer.renderer_of_document_set import RendererOfDocumentSet
+from pimmsqn.apps.viewer.renderer_of_model_component import RendererOfModelComponent
+from pimmsqn.apps.viewer.renderer_of_numerical_experiment import RendererOfNumericalExperiment
+from pimmsqn.apps.viewer.renderer_of_simulation_run import RendererOfSimulationRun
+from pimmsqn.apps.viewer.renderer_of_gridspec import RendererOfGridspec
+from pimmsqn.apps.viewer.renderer_of_platform import RendererOfPlatform
 
 
 # Dictionary ofsupported renderers.

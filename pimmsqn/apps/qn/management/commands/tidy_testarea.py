@@ -8,7 +8,7 @@ Created on 19 Apr 2011
 '''
 
 from django.core.management.base import BaseCommand, CommandError
-from cmip5q.qn.models import *
+from pimmsqn.apps.qn.models import *
 
 class Command(BaseCommand):
         

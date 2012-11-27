@@ -2,7 +2,7 @@
 from datetime import datetime
 
 from django.db import models
-from django.db.models.query import CollectedObjects, delete_objects 
+#from django.db.models.query import CollectedObjects, delete_objects 
 from django.db.models.fields.related import ForeignKey #@UnresolvedImport
 from django.conf import settings #@UnresolvedImport
 from django.core.files.base import ContentFile #@UnresolvedImport
@@ -10,7 +10,7 @@ from django.db.models.query import QuerySet #@UnresolvedImport
 
 from pimmsqn.apps.qn.cimHandling import *
 from pimmsqn.apps.qn.utilities import atomuri
-from pimmsqn.apps.XMLutilities import *
+from pimmsqn.apps.qn.XMLutilities import *
 from pimmsqn.apps.qn.fields import *
 from pimmsqn.apps.viewer.view_manager import render_view
 
@@ -23,97 +23,100 @@ gmd='http://www.isotc211.org/2005/gmd'
 gco="http://www.isotc211.org/2005/gco"
 
 
-def soft_delete(obj,simulate=False):
-    ''' This method provided to use to override native model deletes to avoid
-    cascade on delete ... the first requirement is only in responsible parties,
-    but it may exist elsewhere, so we put it up here as a standalone method.
-    If simulate is passed as true, we don't actually do the delete ... but
-    see if we could have done it.
-          The method returns a tuple boolean and dict. The boolean will be true if 
-    it is possible to delete the object (nothing links to it). If the booleaan
-    is false, then the dict is a dictionary keyed by models into instances which link 
-    to it, and which need to be unlinked before a delete can occur.'''
-    # with help from stack overflow
-
-    assert obj._get_pk_val() is not None, "%s object can't be deleted because its %s attribute is set to None." % (
-                      obj._meta.object_name, obj._meta.pk.attname)
-
-    # My first attempt to do this was simply to override the django delete 
-    # method and only delete the actual instance, but this can leave the
-    # related objects with hanging links to nothing ... which can then
-    # be replaced with the *wrong* objects ... so we either have an error
-    # or wrong data ... no, no, no ...
-    # seen_objs = CollectedObjects()
-    # seen_objs.add(model=obj.__class__, pk=obj.pk, obj=obj, parent_model=None)
-    # delete_objects(seen_objs)
-
-    on_death_row = CollectedObjects()
-    obj._collect_sub_objects(on_death_row)
-    # and ideally clear them all ... but that's hard, and impossible if
-    # they don't have null=True ... wait til this gets fixed in django.
-    # Meanwhile just return the list of direct linkers 
-    # NB: odr={klass1:{id1:instance, id2:instance ...},klass2:{...}}
-    klass=obj.__class__
-    n=0  # number of objects to be deleted
-    for k in on_death_row.unordered_keys():
-        n+=len(on_death_row[k]) 
-    # before we go following the foreign keys, let's just make sure some of these
-    # objects are not simply parent objects in a non abstract class heirarchy.
-    # we should allow those to be deleted happily.
-    if hasattr(obj,'get_parent_model'):
-        # then we know we have at least one parent object to get rid of, and 
-        # if it's the only one, delete with impunity.
-        parent=obj.get_parent_model()
-        if len(on_death_row[parent])==1: 
-            n=1
-        else:
-            logging.info('This case not coded for ... sorry ')
-            raise NotImplementedError
-        
-    if n<>1:
-        #delve into the metadata to find out what managers point at this model,
-        #then use all those to filter out direct relationships to this one.
-        related_models=on_death_row.keys()
-        # now find all the foreign keys
-        directly_linked_models=[]
-        fkeys={}
-        linkdict={}
-        for model in related_models:
-            for f in model._meta.fields:
-                if isinstance(f, ForeignKey) and f.rel.to == klass: 
-                    if model not in directly_linked_models:directly_linked_models.append(model)
-                    # get the foreign keys for later use 
-                    if model in fkeys:
-                        if f not in fkeys[model]: 
-                            fkeys[model].append(f)
-                    else:
-                        fkeys[model]=[f]
-        # parse the instances to check they link to this one
-        # start by rejecting models which don't actually have a foreign key into this objects class
-        for model in related_models:
-            if model not in directly_linked_models: del(on_death_row.data[model])
-        # now parse the instances and see if they have any direct link to this one (they might
-        # be in the list because they link to objects that link to this one, even though they have fks
-        # that would allow direct links).
-        # it's probably be cleaner to go backwards ... now we know the foreign keys, we should
-        # be able to get querysets and see if the object is in the queryset ... but this works too.
-        for model in on_death_row.unordered_keys():
-            # find all the foreign keys to the object.
-            for id in on_death_row.data[model]:
-                referer=on_death_row.data[model][id]
-                for fk in fkeys[model]:
-                    fk_value = getattr(referer, "%s_id" % fk.name)
-                    if fk_value is not None:
-                        mname=model._meta.module_name
-                        if mname not in linkdict: linkdict[mname]=[] 
-                        linkdict[mname].append(referer)
-        return False,linkdict
-    
-    if not simulate: 
-        delete_objects(on_death_row)
-    
-    return True, {}
-
+#def soft_delete(obj, simulate=False):
+#    ''' This method provided to use to override native model deletes to avoid
+#    cascade on delete ... the first requirement is only in responsible parties,
+#    but it may exist elsewhere, so we put it up here as a standalone method.
+#    If simulate is passed as true, we don't actually do the delete ... but
+#    see if we could have done it.
+#          The method returns a tuple boolean and dict. The boolean will be true 
+#    if it is possible to delete the object (nothing links to it). If the 
+#    booleaan is false, then the dict is a dictionary keyed by models into 
+#    instances which link to it, and which need to be unlinked before a delete 
+#    can occur.
+#    
+#    # with help from stack overflow
+#    '''
+#
+#    assert obj._get_pk_val() is not None, "%s object can't be deleted because its %s attribute is set to None." % (
+#                      obj._meta.object_name, obj._meta.pk.attname)
+#
+#    # My first attempt to do this was simply to override the django delete 
+#    # method and only delete the actual instance, but this can leave the
+#    # related objects with hanging links to nothing ... which can then
+#    # be replaced with the *wrong* objects ... so we either have an error
+#    # or wrong data ... no, no, no ...
+#    # seen_objs = CollectedObjects()
+#    # seen_objs.add(model=obj.__class__, pk=obj.pk, obj=obj, parent_model=None)
+#    # delete_objects(seen_objs)
+#
+#    on_death_row = CollectedObjects()
+#    obj._collect_sub_objects(on_death_row)
+#    # and ideally clear them all ... but that's hard, and impossible if
+#    # they don't have null=True ... wait til this gets fixed in django.
+#    # Meanwhile just return the list of direct linkers 
+#    # NB: odr={klass1:{id1:instance, id2:instance ...},klass2:{...}}
+#    klass=obj.__class__
+#    n=0  # number of objects to be deleted
+#    for k in on_death_row.unordered_keys():
+#        n+=len(on_death_row[k]) 
+#    # before we go following the foreign keys, let's just make sure some of these
+#    # objects are not simply parent objects in a non abstract class heirarchy.
+#    # we should allow those to be deleted happily.
+#    if hasattr(obj,'get_parent_model'):
+#        # then we know we have at least one parent object to get rid of, and 
+#        # if it's the only one, delete with impunity.
+#        parent=obj.get_parent_model()
+#        if len(on_death_row[parent])==1: 
+#            n=1
+#        else:
+#            logging.info('This case not coded for ... sorry ')
+#            raise NotImplementedError
+#        
+#    if n<>1:
+#        #delve into the metadata to find out what managers point at this model,
+#        #then use all those to filter out direct relationships to this one.
+#        related_models=on_death_row.keys()
+#        # now find all the foreign keys
+#        directly_linked_models=[]
+#        fkeys={}
+#        linkdict={}
+#        for model in related_models:
+#            for f in model._meta.fields:
+#                if isinstance(f, ForeignKey) and f.rel.to == klass: 
+#                    if model not in directly_linked_models:directly_linked_models.append(model)
+#                    # get the foreign keys for later use 
+#                    if model in fkeys:
+#                        if f not in fkeys[model]: 
+#                            fkeys[model].append(f)
+#                    else:
+#                        fkeys[model]=[f]
+#        # parse the instances to check they link to this one
+#        # start by rejecting models which don't actually have a foreign key into this objects class
+#        for model in related_models:
+#            if model not in directly_linked_models: del(on_death_row.data[model])
+#        # now parse the instances and see if they have any direct link to this one (they might
+#        # be in the list because they link to objects that link to this one, even though they have fks
+#        # that would allow direct links).
+#        # it's probably be cleaner to go backwards ... now we know the foreign keys, we should
+#        # be able to get querysets and see if the object is in the queryset ... but this works too.
+#        for model in on_death_row.unordered_keys():
+#            # find all the foreign keys to the object.
+#            for id in on_death_row.data[model]:
+#                referer=on_death_row.data[model][id]
+#                for fk in fkeys[model]:
+#                    fk_value = getattr(referer, "%s_id" % fk.name)
+#                    if fk_value is not None:
+#                        mname=model._meta.module_name
+#                        if mname not in linkdict: linkdict[mname]=[] 
+#                        linkdict[mname].append(referer)
+#        return False,linkdict
+#    
+#    if not simulate: 
+#        delete_objects(on_death_row)
+#    
+#    return True, {}
+  
 
 class ChildQuerySet(QuerySet):
     ''' Used to support the queryset options on ParentModel'''
@@ -218,7 +221,7 @@ class CIMObject(Fundamentals):
     updated = models.DateTimeField(editable=False)
     # The following attributes are needed to provide "discovery" via atom entries:
     author = models.ForeignKey('ResponsibleParty', blank=True, null=True, 
-                               related_name='%(class)s_author')
+                               related_name='%(class)s_author', on_delete=models.SET_NULL)
     title = models.CharField(max_length=128, blank=True, null=True)
     description = models.TextField(blank=True)
     
@@ -236,31 +239,30 @@ class Doc(Fundamentals):
     ''' Abstract class for general properties of the CIM documents handled in the questionnaire '''
     
     # Parties (all documents are associated with a centre)
-    centre=models.ForeignKey('Centre',blank=True,null=True)
-    author=models.ForeignKey('ResponsibleParty',blank=True,null=True,related_name='%(class)s_author')
-    funder=models.ForeignKey('ResponsibleParty',blank=True,null=True,related_name='%(class)s_funder')
-    contact=models.ForeignKey('ResponsibleParty',blank=True,null=True,related_name='%(class)s_contact')
-    metadataMaintainer=models.ForeignKey('ResponsibleParty',blank=True,null=True,
-                       related_name='%(class)s_metadataMaintainer')
+    centre            = models.ForeignKey('Centre', blank=True, null=True)
+    author            = models.ForeignKey('ResponsibleParty', blank=True, null=True, related_name='%(class)s_author', on_delete=models.SET_NULL)
+    funder            = models.ForeignKey('ResponsibleParty', blank=True, null=True, related_name='%(class)s_funder', on_delete=models.SET_NULL)
+    contact           = models.ForeignKey('ResponsibleParty', blank=True, null=True, related_name='%(class)s_contact', on_delete=models.SET_NULL)
+    metadataMaintainer= models.ForeignKey('ResponsibleParty', blank=True, null=True, related_name='%(class)s_metadataMaintainer', on_delete=models.SET_NULL)
     
-    uri=models.CharField(max_length=64,unique=True,editable=False)
-    title=models.CharField(max_length=128,blank=True,null=True)
-    abbrev=models.CharField(max_length=40)
-    description=models.TextField(blank=True)
-   
+    uri               = models.CharField(max_length=64, unique=True, editable=False)
+    title             = models.CharField(max_length=128, blank=True, null=True)
+    abbrev            = models.CharField(max_length=40)
+    description       = models.TextField(blank=True)
     # next two are used to calculate the status bar, and are filled in by the validation software
-    validErrors=models.IntegerField(default=-1,editable=False)
-    numberOfValidationChecks=models.IntegerField(default=0,editable=False)
+    validErrors       = models.IntegerField(default=-1, editable=False)
+    numberOfValidationChecks = models.IntegerField(default=0, editable=False)
     # following is used by the user to declare the document is "ready"
-    isComplete=models.BooleanField(default=False)
+    isComplete        = models.BooleanField(default=False)
     # to be used for event histories:
-    editHistory=models.ManyToManyField(EditHistoryEvent,blank=True,null=True)
+    editHistory       = models.ManyToManyField(EditHistoryEvent, blank=True, null=True)
     # next two are automagically populated
-    created=models.DateField(auto_now_add=True,editable=False)
-    updated=models.DateField(auto_now=True,editable=False)
+    created           = models.DateField(auto_now_add=True, editable=False)
+    updated           = models.DateField(auto_now=True, editable=False)
+    
     class Meta:
-        abstract=True
-        ordering=['abbrev','title']
+        abstract      = True
+        ordering      = ['abbrev', 'title']
         
     def status(self):
         ''' Return a percentage completion in terms of validation '''
@@ -382,9 +384,9 @@ class Doc(Fundamentals):
             self.uri=uri
         return Fundamentals.save(self,*args,**kwargs)
     
-    def delete(self,*args,**kwargs):
-        ''' Avoid deleting documents which have foreign keys to this instance'''
-        return soft_delete(self,*args,**kwargs)
+#    def delete(self,*args,**kwargs):
+#        ''' Avoid deleting documents which have foreign keys to this instance'''
+#        return soft_delete(self,*args,**kwargs)
         
     def delete4real(self):
         ''' Don't bugger round, just blow me away ... and accept that if anything points to me,
@@ -450,8 +452,8 @@ class ResponsibleParty(models.Model):
     def __unicode__(self):
         return self.abbrev
     
-    def delete(self, *args, **kwargs):
-        return soft_delete(self, *args, **kwargs)
+#    def delete(self, *args, **kwargs):
+#        return soft_delete(self, *args, **kwargs)
     
     class Meta:
         ordering=['abbrev', 'name', 'email']
@@ -493,9 +495,9 @@ class Centre(ResponsibleParty):
     ''' A CMIP5 modelling centre '''
     # It's such an important entity it gets it's own sub class ...
     # I wanted to preserve the API, but title will need to change to name
-    party=models.OneToOneField(ResponsibleParty,parent_link=True,related_name='party')
-    def __init__(self,*args,**kwargs):
-        ResponsibleParty.__init__(self,*args,**kwargs)
+    party = models.OneToOneField(ResponsibleParty, parent_link=True, related_name='party')
+    def __init__(self, *args, **kwargs):
+        ResponsibleParty.__init__(self, *args, **kwargs)
         
 class BaseTerm(models.Model):
     name=models.CharField(max_length=256)
@@ -503,7 +505,7 @@ class BaseTerm(models.Model):
     version=models.CharField(max_length=64,blank=True)
     definition=models.TextField(blank=True)
     def __unicode__(self):
-       return self.name
+        return self.name
     class Meta:
         abstract=True
         ordering=('name',)
@@ -531,8 +533,8 @@ class Reference(models.Model):
     centre=models.ForeignKey('Centre',blank=True,null=True)
     def __unicode__(self):
         return self.name
-    def delete(self,*args,**kwargs):
-        soft_delete(self,*args,**kwargs)
+#    def delete(self,*args,**kwargs):
+#        soft_delete(self,*args,**kwargs)
     class Meta:
         ordering=['name','citation']
     
@@ -1183,7 +1185,7 @@ class Simulation(Doc):
         # We also want to copy across the ensemble information
         # 1. Get the ensemble associated with the current simulation
         eset = self.ensemble_set.all()
-        assert(len(eset)==1, 'There should only be one ensemble set for %s' %s)
+        assert len(eset)==1, ('There should only be one ensemble set for %s' %s)
         ee = eset[0]
 
         # 2. Copy original ensemble
@@ -1469,7 +1471,7 @@ class DataObject(models.Model):
                              related_name='data_cfname')
     
     # references (including web pages)
-    reference = models.ForeignKey(Reference, blank=True, null=True)
+    reference = models.ForeignKey(Reference, blank=True, null=True, on_delete=models.SET_NULL)
     
     # not using this at the moment, but keep for later: csml/science type
     featureType = models.ForeignKey('Term', blank=True, null=True)
@@ -1722,13 +1724,12 @@ class Ensemble(models.Model):
 
     
 class EnsembleMember(models.Model):
-    ensemble=models.ForeignKey(Ensemble,blank=True,null=True)
-    memberNumber=models.IntegerField() # realisation
-    cmod=models.ForeignKey('CodeMod',blank=True,null=True)
-    imod=models.ForeignKey('InputMod',blank=True,null=True)
-    drsMember=models.CharField(max_length=10,blank=True,null=True)
-    requirement=models.ForeignKey(GenericNumericalRequirement, blank=True, 
-                                  null=True)
+    ensemble        = models.ForeignKey(Ensemble, blank=True, null=True)
+    memberNumber    = models.IntegerField() # realisation
+    cmod            = models.ForeignKey('CodeMod', blank=True, null=True, on_delete=models.SET_NULL)
+    imod            = models.ForeignKey('InputMod', blank=True, null=True, on_delete=models.SET_NULL)
+    drsMember       = models.CharField(max_length=10, blank=True, null=True)
+    requirement     = models.ForeignKey(GenericNumericalRequirement, blank=True, null=True)
     
     def __unicode__(self):
         return '%s ensemble member %s'%(self.ensemble.simulation, 
@@ -1769,11 +1770,11 @@ class Modification(ParentModel):
     class Meta:
         ordering=('mnemonic',)
         
-    def delete(self,*args,**kwargs):
-        ''' 
-        Avoid deleting documents which have foreign keys to this instance 
-        '''
-        return soft_delete(self,*args,**kwargs)
+#    def delete(self,*args,**kwargs):
+#        ''' 
+#        Avoid deleting documents which have foreign keys to this instance 
+#        '''
+#        return soft_delete(self,*args,**kwargs)
 
 
 class CodeMod(Modification):

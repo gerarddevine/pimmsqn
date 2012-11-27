@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
-# Django settings for cmip5q project.
+# Django settings for pimms questionnaire
 import os
 thisDir = os.path.dirname(__file__)
+PROJECT_ROOT = os.path.dirname(__file__)
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-
-# If we need to deploy the ap using a script path, we have to tell it here ... 
-# This is a cmip5 addition to the normal django settings, used by urls.py
-DEPLOYED_SCRIPT_PATH=''
+DEBUG = False
+TEMPLATE_DEBUG = False
 
 ADMINS = (
     ('Gerard Devine', 'g.m.devine@reading.ac.uk'),
 )
-SERVER_EMAIL = 'meta4q@neptune.badc.rl.ac.uk'
+
+MANAGERS = ADMINS
+
+SERVER_EMAIL = 'imap.exchange.reading.ac.uk'
 
 MANAGERS = ADMINS
 
@@ -45,17 +45,24 @@ USE_I18N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = thisDir
+MEDIA_ROOT = thisDir+'/media/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = '/static/'
+MEDIA_URL = '/media/'
+
+# Absolute path to the directory static files should be ollected to.
+# Don't put anything in this directory yourself; store your static files
+# in apps' "static/" subdirectories and in STATICFILES_DIRS.
+# Example: "/home/media/media.lawrence.com/static/"
+STATIC_ROOT = thisDir + '/static/'
+STATIC_URL = '/static/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
+ADMIN_MEDIA_PREFIX = '/admin_media/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'z$aa%+2gds&=+gk*m)2dvt%#t28o(kbq38nao#&45k&)651_(g'
@@ -86,8 +93,15 @@ TEMPLATE_DIRS = (
 
 TEMPLATE_STRING_IF_INVALID = 'what happened here?'
 
-#STATIC_DOC_ROOT = os.path.join(thisDir, "templates", "css", )
-STATIC_DOC_ROOT = os.path.join(thisDir, "static", )
+STATIC_DOC_ROOT = thisDir+'/media/'
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.core.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -98,7 +112,7 @@ INSTALLED_APPS = (
     'south',
     'apps.qn',
     'apps.initialiser',
-    'apps.explorer'
+    'apps.viewer'
 )
 
 # ----------------------------------------------------
@@ -112,7 +126,6 @@ logging.basicConfig(
 LOG=logging.getLogger('CMIP5')
 
 # Location of test files to expose through feed
-
 TESTDIR = os.path.join (thisDir,'test')
 
 try:

@@ -5,7 +5,7 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponse,HttpResponseRedirect,HttpResponseBadRequest
 from django.core.urlresolvers import reverse
 from django.db.models import Q
-from django.template import RequestContext
+from django.template.context import RequestContext
 from django import forms
 from django.conf import settings
 
@@ -166,14 +166,7 @@ def centres(request):
         p=p.exclude(abbrev=ab)
     
     # creating a separate list for the example and test centre
-    p_aux=Centre.objects.filter(Q(abbrev='1. Example')|Q(abbrev='2. Test Centre'))
-    
-    #for ab in ['1. Example','2. Test Centre']:
-    #    p_aux.append(Centre.objects.get(abbrev=ab))
-    
-    # adding url location for AR5 table button    
-    ar5URL = reverse('pimmsqn.explorer.views_ar5.home')
-    stratURL = reverse('pimmsqn.explorer.views_strat.home')    
+    p_aux=Centre.objects.filter(Q(abbrev='1. Example')|Q(abbrev='2. Test Centre'))  
     
     if request.method=='POST':
         #yep we've selected something
@@ -208,7 +201,7 @@ def centres(request):
             return render_badrequest('error.html',{'message':m})
     else: 
         logging.info('Viewing centres')
-        curl=reverse('pimmsqn.apps.qn.views.centres')
+        curl = reverse('pimmsqn.apps.qn.views.centres')
         feeds=DocFeed.feeds.keys()
         feedlist=[]
         for f in sorted(feeds):
@@ -217,14 +210,13 @@ def centres(request):
         #get publication list for front page table
         pubs = getpubs()
         
-        return render_to_response('centres/centres.html',{'objects':sublist(p,4),
+        return render_to_response('centres/centres.html', {'objects':sublist(p,4),
                                                   'centreList':p,
                                                   'auxList':p_aux,
                                                   'curl':curl,
                                                   'pubs':pubs,
-                                                  'feedobjects':sublist(feedlist,4),
-                                                  'ar5URL': ar5URL,
-                                                  'stratURL': stratURL}
+                                                  'feedobjects':sublist(feedlist,4)},
+                                                  context_instance = RequestContext(request)
                                                   )
     
 def centre(request,centre_id):

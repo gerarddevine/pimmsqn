@@ -3,8 +3,8 @@ HTML generator for different sections of a gridspec CIM instance.
 """
 
 # Module imports.
-from cmip5q.viewer.for_html import *
-from cmip5q.viewer.common import *
+from pimmsqn.apps.viewer.for_html import *
+from pimmsqn.apps.viewer.common import *
 
 # Module provenance info.
 __author__="Gerry Devine"

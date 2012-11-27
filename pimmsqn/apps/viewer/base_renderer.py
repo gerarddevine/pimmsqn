@@ -11,7 +11,7 @@ from abc import abstractproperty
 import lxml
 from lxml import etree as et
 
-from pimmsqn.viewer.view_exception import ViewException
+from pimmsqn.apps.viewer.view_exception import ViewException
 
 # Supported view formats.
 VIEW_FORMAT_HTML = u"html"

@@ -1,16 +1,12 @@
-<div class="boxer2">
-
-  <div class="formcontainer">
+  <div class="header">
+    <h2> Login </h2>
+  </div>
     
-    <div class="header">  
-      <h1>Model Centre Metadata Entry</h1>
-    </div>
+  <div class="info">
+    <p>Choose your centre from below:</p>
+  </div>
     
-    <div class="info">
-      <p>Choose your centre from below:</p>
-    </div>
-    
-    <div class="content">
+  <div class="content">
     <form action="{{curl}}" method='post' onsubmit="myProject.bypassConfirm()">
         <table class="linklike" width="100%">
           {% for row in objects %}
@@ -28,13 +24,11 @@
             </tr>
           {% endfor %}
         </table>
-    </div>
-    
-    <div class="buttonbar">  
-      <input type="submit" class="submitBut" value="Choose"/>
-    </div>
-    
-    </form>
   </div>
+    
+  <div class="buttonbar">  
+    <input type="submit" class="submitBut" value="Choose"/>
+  </div>
+    
+  </form>
   
-</div>

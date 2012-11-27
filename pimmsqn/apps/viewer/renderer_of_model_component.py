@@ -6,8 +6,8 @@ A concrete view over a cim instance.
 import lxml
 from lxml import etree as et
 
-from cmip5q.viewer.base_renderer import RendererBase
-from cmip5q.viewer.modelhtml_generator import get_modelhtml
+from pimmsqn.apps.viewer.base_renderer import RendererBase
+from pimmsqn.apps.viewer.modelhtml_generator import get_modelhtml
 
 
 cimns = 'http://www.metaforclimate.eu/cim/1.4'

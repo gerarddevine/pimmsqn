@@ -1,23 +1,23 @@
-
-# This file has the NumericalModel class, which is independent of the django views (but not
-# the django strage), used to instantiate numerical models from xml versions of the mindmaps,
-# and to produce xml instances of the django storage.
-
-from qn.models import *
-from qn.utilities import atomuri
-from XMLinitialiseQ import VocabList
-
-# move from ElementTree to lxml.etree
-#from xml.etree import ElementTree as ET
 from lxml import etree as ET
 import unittest
 import os
 import datetime
 
+# This file has the NumericalModel class, which is independent of the django views (but not
+# the django strage), used to instantiate numerical models from xml versions of the mindmaps,
+# and to produce xml instances of the django storage.
+
+from pimmsqn.apps.qn.models import *
+from pimmsqn.apps.qn.utilities import atomuri
+from pimmsqn.apps.initialiser.XMLinitialiseQ import VocabList
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'pimmsqn.settings'
 from django.conf import settings
+
 logging=settings.LOG
 
 Realms=VocabList['Realms']
+
 
 def initialiseModel():
     ''' Setup a template for model copying in the dummy CMIP5 centre '''
@@ -96,10 +96,7 @@ class NumericalModel:
        
         ''' Read mindmap XML documents to build a complete model description '''
             
-        mindMapDir = os.path.join(os.path.dirname(__file__), 
-                            'static',      
-                            'data',
-                            'mindmaps')
+        mindMapDir = os.path.join(settings.PROJECT_ROOT, "static/data/mindmaps")
                                 
         logging.debug('Looking for mindmaps in %s'%mindMapDir)
         mindmaps=[os.path.join(mindMapDir, f) for f in os.listdir(mindMapDir)

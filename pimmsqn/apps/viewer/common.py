@@ -3,7 +3,7 @@ HTML generators for sections common amongst CIM documents.
 """
 
 # Module imports.
-from pimmsqn.viewer.for_html import *
+from pimmsqn.apps.viewer.for_html import *
 
 # Module provenance info.
 __author__="Gerry Devine"

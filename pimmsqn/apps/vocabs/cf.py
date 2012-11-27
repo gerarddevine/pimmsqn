@@ -28,6 +28,6 @@ class TestFunctions(unittest.TestCase):
     def testCF(self):
         import os
         d='vocabs'
-        p=os.path.join(d,'cf-standard-name-table.xml')
+        p=os.path.join('apps', d,'cf-standard-name-table.xml')
         cf=CFtable(p)
 

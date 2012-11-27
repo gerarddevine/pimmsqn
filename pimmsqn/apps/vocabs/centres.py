@@ -1,5 +1,7 @@
-from cmip5q.qn.models import *
+from pimmsqn.apps.qn.models import *
+
 import uuid
+
 CENTRES=(
              ('NCAS','UK National Centre for Atmospheric Science',('HiGEM1.2')),
              ('NCAR','US National Centre for Atmospheric Research',('CCSM4(H)','CCM4(M)')),
@@ -34,11 +36,15 @@ CENTRES=(
         )
 def loadCentres():
     for centre in CENTRES:
-        u=str(uuid.uuid1())
-        c=Centre(abbrev=centre[0],name=centre[1],uri=u)
-        c.isOrganisation=True
+        u = str(uuid.uuid1())
+        c = Centre(abbrev=centre[0], name=centre[1], uri=u)
+        c.isOrganisation = True
         c.save()
         #and give each of them an unknown user to play with
-        rp=ResponsibleParty(name='Unknown',abbrev='Unknown',address='Erehwon',email='u@foo.bar',
-                            uri=str(uuid.uuid1()),centre=c)
+        rp = ResponsibleParty(name='Unknown',
+                              abbrev='Unknown',
+                              address='Erehwon',
+                              email='u@foo.bar',
+                              uri=str(uuid.uuid1()),
+                              centre=c)
         rp.save()

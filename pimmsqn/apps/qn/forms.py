@@ -236,8 +236,8 @@ class DataContainerForm(forms.ModelForm):
     This is the form used to edit "files" ... 
     '''
     title = forms.CharField(widget=forms.TextInput(attrs={'size':'45'}))
-    link = extURLField(widget=forms.TextInput(attrs={'size':'45'}), 
-                          required=False)
+    #link = extURLField(widget=forms.TextInput(attrs={'size':'45'}), required=False)
+    link = URLField(required=False)
     description = forms.CharField(widget=forms.Textarea
                                   ({'cols':'50', 'rows':'4'}), required=False)
     

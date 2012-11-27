@@ -1,6 +1,12 @@
-from qn.models import *
+import os
 import csv
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'pimmsqn.settings'
+
 from django.conf import settings
+
+from pimmsqn.apps.qn.models import *
+
 logging=settings.LOG
 
 def initialiseVars():
@@ -8,8 +14,9 @@ def initialiseVars():
     This routine initialises the database with variables contained within 
     'standard' files for boundary conditions etc 
     '''
-    VarsCSVinfo = csv.reader(open('static/data/References/Vars_CSV.csv'), 
-                             delimiter=';', quotechar='|')
+  
+    filepath = os.path.join(settings.PROJECT_ROOT, "static/data/References/Vars_CSV.csv")
+    VarsCSVinfo = csv.reader(open(filepath), delimiter=';', quotechar='|')
     
     # loop over all variables in spreadsheet
     for row in VarsCSVinfo:

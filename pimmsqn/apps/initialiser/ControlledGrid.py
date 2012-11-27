@@ -1,9 +1,9 @@
 
 # This file really needs to be joined up with ControlledModel to avoid repeated code. 
 
-from qn.models import *
-from qn.utilities import atomuri
-from XMLinitialiseQ import VocabList
+from pimmsqn.apps.qn.models import *
+from pimmsqn.apps.qn.utilities import atomuri
+from pimmsqn.apps.initialiser.XMLinitialiseQ import VocabList
 
 # move from ElementTree to lxml.etree
 #from xml.etree import ElementTree as ET
@@ -91,11 +91,7 @@ class NumericalGrid:
        
         ''' Read mindmap XML document(s) to build a complete grid description '''
             
-        mindMapDir = os.path.join(os.path.dirname(__file__),
-                            'static', 
-                            'data',
-                            'mindmaps', 
-                            'grid')
+        mindMapDir = os.path.join(settings.PROJECT_ROOT, "static/data/mindmaps/grid")
                                 
         logging.debug('Looking for grid mindmaps in %s'%mindMapDir)
         mindmaps=[os.path.join(mindMapDir, f) for f in os.listdir(mindMapDir)

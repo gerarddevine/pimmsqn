@@ -5,6 +5,12 @@
 ## doesn't.
 ##
 ##
+
+import os 
+os.environ['DJANGO_SETTINGS_MODULE'] = 'pimmsqn.settings'
+
+from django.conf import settings
+
 from pimmsqn.apps.vocabs.cf import CFtable
 from pimmsqn.apps.qn.models import *
 from pimmsqn.apps.qn.utilities import atomuri
@@ -89,7 +95,7 @@ VocabList={'Realms':
     }
     
 def loadCF():
-     p=os.path.join('vocabs','cf-standard-name-table.xml')
+     p=os.path.join(settings.PROJECT_ROOT, 'apps', 'vocabs', 'cf-standard-name-table.xml')
      cf=CFtable(p)
      v=Vocab(uri='cf-standard-name-table.xml',name='CFStandardNames',version=cf.version)
      v.save()

@@ -13,8 +13,6 @@ from pimmsqn.apps.qn.feeds import DocFeed
 # this is not actually correct, since strictly we need hexadecimal following this pattern
 uuid='\w\w\w\w\w\w\w\w-\w\w\w\w-\w\w\w\w-\w\w\w\w-\w\w\w\w\w\w\w\w\w\w\w\w'
 
-script_path=settings.DEPLOYED_SCRIPT_PATH
-
 urlpatterns = patterns('',
     # Example:
     # (r'^pimmsqn/', include('pimmsqn.foo.urls')),
@@ -160,14 +158,6 @@ urlpatterns = patterns('',
     #(r'^admin/qn/component/copy/$', 'pimmsqn.apps.qn.admin.admin_views.modelcopy'),
     (r'^cmip5/admin/', include(admin.site.urls)),
 
-    #---------------------------------
-    # Metadata explorer url includes
-
-    # metadata explorer included
-    (r'^cmip5/explorer/', include('pimmsqn.explorer.urls')),
-
-    # API included
-    (r'^cmip5/qnstats/', include('pimmsqn.qnstats.urls')),
 )
 
 
@@ -176,18 +166,15 @@ urlpatterns = patterns('',
 #    for key in ['validate','view','xml','html','export']:
 #        urlpatterns+=patterns('',(r'^cmip5/(?P<centre_id>\d+)/%s/(?P<%s_id>\d+)/%s/$'%(doc,doc,key),'pimmsqn.apps.qn.views.doc'))
                     
-if True:  # HACK HACK HACK POOR PERFORMANCE AND SECURITY.
-    urlpatterns += patterns('',
-        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root':settings.STATIC_DOC_ROOT,'show_indexes': True}),
+if settings.DEBUG:
+    urlpatterns += patterns('django.views.static',
+    (r'^static/(?P<path>.*)$', 
+        'serve', {
+        'document_root': settings.STATIC_ROOT,
+        'show_indexes': True }),
+    (r'^media/(?P<path>.*)$', 
+        'serve', {
+        'document_root': settings.MEDIA_ROOT,
+        'show_indexes': True }),
     )
-    
-# To direct web crawlers to bypass potentially redundant links
-urlpatterns += patterns('',
-    (r'^robots\.txt$', direct_to_template,
-     {'template': 'robots.txt', 'mimetype': 'text/plain'}),
-)
 
-
-# finally if necessary, throw it down a level
-
-urlpatterns=patterns('',(r'^%s'%script_path,include(urlpatterns)))

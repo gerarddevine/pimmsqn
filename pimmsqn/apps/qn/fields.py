@@ -467,8 +467,7 @@ class extURLField(URLField):
 
     def __init__(self, max_length=None, min_length=None, verify_exists=False,
             validator_user_agent=URL_VALIDATOR_USER_AGENT, *args, **kwargs):
-        super(URLField, self).__init__(url_re, max_length, min_length, *args,
-                                       **kwargs)
+        super(URLField, self).__init__(url_re, max_length, min_length, *args, **kwargs)
         self.verify_exists = verify_exists
         self.user_agent = validator_user_agent
   

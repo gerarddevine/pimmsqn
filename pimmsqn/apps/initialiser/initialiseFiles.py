@@ -1,7 +1,13 @@
-from qn.models import *
+import os
 import csv
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'pimmsqn.settings'
+
 from django.conf import settings
-logging=settings.LOG
+
+from pimmsqn.apps.qn.models import *
+
+logging = settings.LOG
 
 def initialiseFiles():
     ''' 
@@ -9,8 +15,8 @@ def initialiseFiles():
     boundary conditoins etc 
     '''
     
-    FilesCSVinfo = csv.reader(open('static/data/References/Files_CSV.csv'), 
-                              delimiter=';', quotechar='|')
+    filepath = os.path.join(settings.PROJECT_ROOT, "static/data/References/Files_CSV.csv")
+    FilesCSVinfo = csv.reader(open(filepath), delimiter=';', quotechar='|')
     
     # this is the vocab that we always use for reference types:
     v=Vocab.objects.get(name='FileFormats')

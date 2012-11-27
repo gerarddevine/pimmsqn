@@ -1,6 +1,12 @@
-from qn.models import *
+import os
 import csv
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'pimmsqn.settings'
+
 from django.conf import settings
+
+from pimmsqn.apps.qn.models import *
+
 logging=settings.LOG
 
 
@@ -10,8 +16,8 @@ def initialiseRefs():
     boundary conditoins etc 
     '''
     
-    CSVinfo = csv.reader(open('static/data/References/Refs_CSV.csv'), 
-                         delimiter=';', quotechar='|')
+    filepath = os.path.join(settings.PROJECT_ROOT, "static/data/References/Refs_CSV.csv")
+    CSVinfo = csv.reader(open(filepath), delimiter=';', quotechar='|')
     
     # this is the vocab that we always use for reference types:
     v=Vocab.objects.get(name='ReferenceTypes')

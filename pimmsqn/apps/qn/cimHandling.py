@@ -8,8 +8,8 @@ logging=settings.LOG
 import pkg_resources
 
 #http://peak.telecommunity.com/DevCenter/PkgResources#resourcemanager-api
-XSLDIR=pkg_resources.resource_filename("cmip5q","xsl")  # TODO: do we need to worry about cleanup?
-XSDDIR=pkg_resources.resource_filename("cmip5q","xsd")  # TODO: do we need to worry about cleanup?
+XSLDIR=pkg_resources.resource_filename("pimmsqn","xsl")  # TODO: do we need to worry about cleanup?
+XSDDIR=pkg_resources.resource_filename("pimmsqn","xsd")  # TODO: do we need to worry about cleanup?
 
 def shellcommand(command):
     ''' lightweight wrapper to os.system that logs the return and handles errors '''

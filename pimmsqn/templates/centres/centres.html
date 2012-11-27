@@ -1,41 +1,19 @@
-{% extends "base.html" %}
+{% extends "site/one_column_page.html" %}
 
-{% block content %}
-
-<script type="text/javascript">
-     YAHOO.namespace("e111.container");
-     {% for choice in centreList %}
-         YAHOO.e111.container.ytt{{choice.id}} = new YAHOO.widget.Tooltip("ytt{{choice.id}}", 
-        		 { context:"tt{{choice.id}}", text:"{{choice.abbrev}}:&nbsp;{{choice.name}}" });
-     {% endfor %}
-</script>
-
-<center>
-  <h1> CMIP5 Model Metadata</h1>
-</center>
+{% block page_column_one %}
 
 <!-- Centre select Area -->
-<div class="boxer">
+<div class="row well">
 {% include 'centres/centreselect.html' %}
-</div>
-
-<!-- Test/Example centre Area -->
-<div class="boxer">
-{% include 'centres/testarea.html' %}
 </div>
  
 <!-- Atom Feeds section -->
-<div class="boxer">
+<div class="row well">
 {% include 'centres/atomfeeds.html' %}
 </div>
 
-<!-- Interim tools section -->
-<div class="boxer">
-{% include 'centres/inttools.html' %}
-</div>
-
 <!-- Published CIM documents table -->
-<div class="boxer">
+<div class="row well">
 {% include 'centres/pubtable.html' %}
 </div>
 
